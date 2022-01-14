@@ -1,0 +1,129 @@
+import pygame
+from classes import Area, Mark, Life, Colors
+
+pygame.init()
+
+white = (255, 255, 255)
+black = (0, 0, 0)
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
+
+AreaGen = Area(700, 500)
+
+sc = pygame.display.set_mode(AreaGen.display_info())
+xmin = 0
+xmax = int(AreaGen.w())
+ymin = 0
+ymax = int(AreaGen.h())
+
+
+def clean_screen():
+    sc.fill(Area.white)
+
+    for x in range(0, xmax, 10):
+        pygame.draw.line(sc, black, (x, ymin), (x, ymax))
+
+    for y in range(0, ymax, 10):
+        pygame.draw.line(sc, black, (xmin, y), (xmax, y))
+
+    pygame.display.update()
+
+
+clean_screen()
+
+Stop_marking = False
+i = 0
+flag = 0
+marks = []
+new = []
+while True:
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            exit()
+
+        elif event.type == pygame.MOUSEBUTTONDOWN and Stop_marking is False:
+            x0, y0 = pygame.mouse.get_pos()
+            x0 = int(x0 / 10) * 10 + 5
+            y0 = int(y0 / 10) * 10 + 5
+            i = 0
+            flag = 0
+            for obj in marks:
+                if obj.x0 == x0 and obj.y0 == y0:
+                    flag = 1
+                    if event.button == 3:
+                        pygame.draw.circle(sc, white, (x0, y0), 4)
+                        marks.pop(i)
+
+                i += 1
+            if event.button == 1 and flag == 0:
+                pygame.draw.circle(sc, black, (x0, y0), 4)
+                marks.append(Mark(x0, y0))
+
+        elif event.type == pygame.KEYDOWN:
+            if pygame.key.get_pressed()[pygame.K_KP_ENTER] or event.key == 13:
+                flag = 0
+                ind = 0
+                indexes = []
+                ind_2 = 0
+                indexes_2 = []
+                for obj in marks:
+                    i = 0
+                    c, d = obj.x0, obj.y0
+                    for x0 in range(c - 10, c + 20, 10):
+                        for y0 in range(d - 10, d + 20, 10):
+                            flag = 0
+                            for obj in marks:
+                                if obj.y0 == y0 and obj.x0 == x0:
+                                    i += 1
+                                    flag = 1
+                            if c == x0 and d == y0:
+                                flag = 1
+                            elif flag == 0:
+                                for Life.obj in new:
+                                    if Life.obj.x0 == x0 and Life.obj.y0 == y0:
+                                        flag = 1
+                            if flag == 0:
+                                new.append(Life(x0, y0))
+
+                    if (i < 3) or (i > 4):
+                        pygame.draw.circle(sc, white, (c, d), 4)
+                        indexes.append(ind)
+                    ind += 1
+                Stop_marking = True
+
+                for Life.obj in new:
+                    i = 0
+                    c, d = Life.obj.x0, Life.obj.y0
+                    for x0 in range(c - 10, c + 20, 10):
+                        for y0 in range(d - 10, d + 20, 10):
+                            for obj in marks:
+                                if obj.y0 == y0 and obj.x0 == x0:
+                                    i += 1
+                    if i == 3:
+                        pygame.draw.circle(sc, black, (c, d), 4)
+
+                    else:
+                        indexes_2.append(ind_2)
+                    ind_2 += 1
+
+                for ind in reversed(indexes):
+                    marks.pop(ind)
+                for ind_2 in reversed(indexes_2):
+                    new.pop(ind_2)
+                marks.extend(new)
+                for obj in marks:
+                    print(obj.x0, obj.y0)
+                Stop_marking = True
+
+            elif pygame.key.get_pressed()[pygame.K_SPACE]:
+                Stop_marking = False
+
+            elif pygame.key.get_pressed()[pygame.K_LSHIFT]:
+                clean_screen()
+                new.clear()
+                marks.clear()
+                Stop_marking = False
+
+    pygame.display.update()
