@@ -1,4 +1,5 @@
 class Area:
+    white = (255, 255, 255)
 
     def __init__(self, width, height):
         self.width = width
@@ -30,17 +31,3 @@ class Life(object):
         self.x0 = x0
         self.y0 = y0
         Life.new.append(self)
-
-
-class Colors():
-
-    def __init__(self, R, G, B):
-        self.R = R
-        self.G = G
-        self.B = B
-
-white = Colors(255, 255, 255)
-black = Colors(0, 0, 0)
-red = Colors(255, 0, 0)
-green = Colors(0, 255, 0)
-blue = Colors(0, 0, 255)
