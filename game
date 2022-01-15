@@ -48,7 +48,7 @@ while True:
             y0 = int(y0 / 10) * 10 + 5
             i = 0
             flag = 0
-            # Пробегаемся по нашему список отмеченных точек
+            # Пробегаемся по нашему списку отмеченных точек
             for obj in marks:
                 if obj.x0 == x0 and obj.y0 == y0:
                     flag = 1
@@ -58,7 +58,7 @@ while True:
                         marks.pop(i)
 
                 i += 1
-            # Добавим отметку в список только, если её не отмечали ранее
+            # Добавим отметку в список, только если её не отмечали ранее
             if event.button == 1 and flag == 0:
                 pygame.draw.circle(sc, black, (x0, y0), 4)
                 marks.append(Mark(x0, y0))
@@ -101,7 +101,7 @@ while True:
                         pygame.draw.circle(sc, white, (c, d), 4)
                         indexes.append(ind)
                     ind += 1
-                # Практически аналогично поищем новую жизнь в списке пустой клеток-соседей
+                # Практически аналогично поищем новую жизнь в списке пустых клеток-соседей
                 for Life.obj in new:
                     i = 0
                     c, d = Life.obj.x0, Life.obj.y0
